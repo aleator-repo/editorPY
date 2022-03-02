@@ -1,0 +1,8 @@
+{
+    "_comment"   : "enviroment disponibles: development, testing, production",
+    "hostIP"    : "192.168.2.5",
+    "enviroment" : "development",
+    "_puertoProd": "",
+    "puertoDev" : "5000",
+    "_puertoTest": ""
+}
