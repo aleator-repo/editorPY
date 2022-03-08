@@ -86,8 +86,6 @@ def getDict( table , session):
                         toRet[number]['number'] =  number
                         toRet[number]['format'] =  formato
                         toRet[number]['conversion'] =  conversion
-
-
             else: 
                 try: 
                     nombre = nombre.strip()
@@ -189,6 +187,7 @@ def editor(table,id):
         return ({"Error":str(e)})
 
     data = {}
+    countColumns = 1
     for i, elem in enumerate(R):
         if (type(elem) == str):
             data[i] = str(elem)
@@ -201,7 +200,8 @@ def editor(table,id):
                     except Exception as E:
                         data[i] = {j:str(elemL2)}
                 elif (type(elemL2) == list):
-                    data[i] = {j: ''}
+                    countColumns = 2
+                    data[i][j] = ''
                     for k,elemL3 in enumerate (elemL2):
                         if (type(elemL3) == str):
                             try:
@@ -209,6 +209,7 @@ def editor(table,id):
                             except Exception as E:
                                 data[i][j] = {k:str(elemL3)}
                         elif (type(elemL3) == list):
+                            countColums = 3
                             data[i][j] = {k: ''}
                             for l,elemL4 in enumerate (elemL3):
                                 if (type(elemL4) == str):
@@ -222,14 +223,13 @@ def editor(table,id):
     for key, value in dic.items():
         if (key > 0):
             try:
-                #toRet[key] = [key,value,[data[key-1]]]
                 toRet[key] = value
                 toRet[key]['value']=[data[key-1]]
 
             except:
                 toRet[key]['value']=['']
 
-    return render_template("tableEdit.html", table =table, idRecord =id, data = toRet)
+    return render_template("tableEdit.html", table =table, idRecord =id, data = toRet, colums = countColumns)
     
 
 def getText(arr):
@@ -296,15 +296,32 @@ def updateMValue():
     nuevoVal =request.json['nuevoVal']
 
     F = uopy.File(table,session = getConnectionDB(ses))
-
+    
     if (type(nuevoVal) == str):
         F.write_named_fields([registro], [campo], [nuevoVal])
         toRet = nuevoVal
     else:
         toRet = {}
+        toWrite = []
+        for mvElem in nuevoVal:
+            if (len(mvElem) == 1):
+                toWrite.append(mvElem[0])
+            else:
+                toWrite.append(mvElem)
         F.write_named_fields([registro], [campo], [[nuevoVal]])
         for i,elem in enumerate(nuevoVal):
-            toRet[i+1]=elem
+            if (len(elem) == 1):
+                toRet[i]=elem[0]
+            else: 
+                for j,elemL2 in enumerate(elem):
+                    try:
+                        toRet[i][j] = str(elemL2)
+                    except Exception as E:
+                        toRet[i] = {j:str(elemL2)}
+
+
+
+    
 
     return ({"newValue":[str(toRet)]})
 
