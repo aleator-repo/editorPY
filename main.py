@@ -4,6 +4,7 @@ import json
 import uopy
 from uopy import UOError , Command, List
 from uopy import EXEC_MORE_OUTPUT
+from datetime import datetime
 
 #Imports del sistema
 import os
@@ -204,12 +205,13 @@ def editor(table,id):
                     data[i][j] = ''
                     for k,elemL3 in enumerate (elemL2):
                         if (type(elemL3) == str):
+                            countColumns = 3
                             try:
                                 data[i][j][k] = str(elemL3)
                             except Exception as E:
                                 data[i][j] = {k:str(elemL3)}
                         elif (type(elemL3) == list):
-                            countColums = 3
+                            #countColumns = 3
                             data[i][j] = {k: ''}
                             for l,elemL4 in enumerate (elemL3):
                                 if (type(elemL4) == str):
@@ -225,8 +227,19 @@ def editor(table,id):
             try:
                 toRet[key] = value
                 toRet[key]['value']=[data[key-1]]
-
-            except:
+                if (toRet[key]['conversion'] != '' and data[key-1] != ''):
+                    newData = {}
+                    if (type(data[key-1]) == str):
+                        toConv = data[key-1]
+                        convertido=uopy.DynArray(toConv,session = getConnectionDB(ses)).oconv('D4/E').list[0]
+                        newData[0] = str(convertido)
+                    else:
+                        for toConvKey, toConvValue in data[key-1].items():
+                            toConv = toConvValue
+                            convertido=uopy.DynArray(toConv,session = getConnectionDB(ses)).oconv('D4/E').list[0]
+                            newData[toConvKey] = str(convertido)
+                    toRet[key]['value'] = [newData]
+            except Exception as e:
                 toRet[key]['value']=['']
 
     return render_template("tableEdit.html", table =table, idRecord =id, data = toRet, colums = countColumns)
@@ -298,7 +311,10 @@ def updateMValue():
     F = uopy.File(table,session = getConnectionDB(ses))
     
     if (type(nuevoVal) == str):
-        F.write_named_fields([registro], [campo], [nuevoVal])
+        try:
+            F.write_named_fields([registro], [campo], [nuevoVal])
+        except Exception as e:
+            print("Error")
         toRet = nuevoVal
     else:
         toRet = {}
@@ -308,7 +324,10 @@ def updateMValue():
                 toWrite.append(mvElem[0])
             else:
                 toWrite.append(mvElem)
-        F.write_named_fields([registro], [campo], [[nuevoVal]])
+            try: 
+                F.write_named_fields([registro], [campo], [[nuevoVal]])
+            except Exception as e:
+                print("Error")
         for i,elem in enumerate(nuevoVal):
             if (len(elem) == 1):
                 toRet[i]=elem[0]
@@ -318,6 +337,68 @@ def updateMValue():
                         toRet[i][j] = str(elemL2)
                     except Exception as E:
                         toRet[i] = {j:str(elemL2)}
+
+
+
+    
+
+    return ({"newValue":[str(toRet)]})
+
+@app.route('/updateDataValue',methods=['POST'])
+def updateDataValue():
+    
+    datos = request.json
+
+    table = request.json['table'].upper()
+    registro = int(request.json['registro'])
+    campo = request.json['campo'].upper()
+    nuevoVal =request.json['nuevoVal']
+
+    F = uopy.File(table,session = getConnectionDB(ses))
+    
+    if (type(nuevoVal) == str):
+        date_time_str = nuevoVal
+        date_time_obj = datetime.strptime(date_time_str, '%d/%m/%y')
+
+        try:
+            F.write_named_fields([registro], [campo], [nuevoVal])
+        except Exception as e:
+            print("Error")
+        toRet = nuevoVal
+    else:
+        toRet = {}
+        toWrite = []
+        grabar = 1
+        for mvElem in nuevoVal:
+            if (len(mvElem) == 1):
+                dateTimeStr = mvElem[0]
+                try:
+                    dateTimeStr = str(datetime.strptime(dateTimeStr, '%d/%m/%Y'))
+                except Exception as e:
+                    grabar = 0
+                toWrite.append(dateTimeStr)
+            else:
+                for toConvElem in mvElem:
+                    try:
+                        dateTimeStr = str(datetime.strptime(toConvElem, '%d/%m/%Y'))
+                    except Exception as e:
+                        grabar = 0
+                toWrite.append(mvElem)
+
+        if (grabar == 1):
+            try: 
+                F.write_named_fields([registro], [campo], [[nuevoVal]])
+            except Exception as e:
+                print("Error")
+            for i,elem in enumerate(nuevoVal):
+                if (len(elem) == 1):
+                    toRet[i]=elem[0]
+                else: 
+                    for j,elemL2 in enumerate(elem):
+                        try:
+                            toRet[i][j] = str(elemL2)
+                        except Exception as E:
+                            toRet[i] = {j:str(elemL2)}
 
 
 
