@@ -111,9 +111,8 @@ def index():
 
 @app.route('/search',methods=['POST'])
 def search():
-    ses = getConnectionDB()
     table  = request.json['datos']
-    thelistcommand = "SELECT "+table
+    thelistcommand = "SELECT "+table.upper()
     resul = getSelectList( thelistcommand , ses)
 
     toRet = {
