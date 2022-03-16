@@ -201,7 +201,7 @@ def editor(table,id):
                         data[i] = {j:str(elemL2)}
                 elif (type(elemL2) == list):
                     countColumns = 2
-                        data[i][j] = ''
+                    data[i][j] = ''
                     for k,elemL3 in enumerate (elemL2):
                         if (type(elemL3) == str):
                             countColumns = 3

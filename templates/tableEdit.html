@@ -7,6 +7,83 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+  <style>
+    @media only screen and (max-width: 800px) {
+
+    /* Force table to not be like tables anymore */
+
+    .tabla-responsive,
+    .tabla-responsive thead, 
+    .tabla-responsive tbody, 
+    .tabla-responsive th, 
+    .tabla-responsive td,
+    .tabla-responsive tr { 
+      display: block; 
+    }
+
+    .tabla-edicion,
+    .tabla-edicion thead, 
+    .tabla-edicion tbody, 
+    .tabla-edicion th, 
+    .tabla-edicion td,
+    .tabla-edicion tr { 
+      display: inline-block; 
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    .tabla-responsive thead,
+    .tabla-responsive tr  { 
+      position: none;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    .tabla-responsive thead tr  { 
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    .tabla-responsive tr { border: 1px solid #ccc; }
+
+    .tabla-responsive tbody tr td { 
+      /* Behave  like a "row" */
+      border: none;
+      border-bottom: 1px solid #eee; 
+      position: relative;
+      padding-left: 50%; 
+      white-space: normal;
+      text-align:left;
+    }
+
+    .tabla-edicion tbody tr td { 
+      /* Behave  like a "row" */
+      border-bottom: 1px rgb(255, 255, 255); 
+      padding-left: .75rem;
+      vertical-align: top;
+      box-sizing:border-box;
+      border-collapse:collapse
+    }
+
+
+    .tabla-responsive td:before { 
+      /* Now like a table header */
+      position: absolute;
+      /* Top/left values mimic padding */
+      top: 6px;
+      left: 6px;
+      width: 45%; 
+      padding-right: 10px; 
+      text-align:left;
+      font-weight: bold;
+    }
+
+    /*
+    Label the data
+    */
+    .tabla-responsive td:before { content: attr(data-title); }
+    }
+  </style>
 
 </head>
 
@@ -24,123 +101,123 @@
         <div id="table" class="table-editable" style="opacity: 0;">
           <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-success"><i class="fas fa-plus fa-2x"
                 aria-hidden="true"></i></a></span>
-              
-          <table class="table table-bordered table-responsive-md table-striped text-center">
-            <thead>
-              <tr>
-                <th class="text-center">Id</th>
-                <th class="text-center">Campo</th>
-                <th class="text-center">Tipo</th>
-                <th class="text-center">Conversión</th>
-                <th class="text-center">SM</th>
-                <th class="text-center">Valor</th>
-                <th class="text-center">Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for key, value in data.items() %}
-              <tr>
-                <td>{{value['number']}}</td>
-                <td>{{value['name']}}</td>
-                <td>{{value['type']}}</td>
-                <td>{{value['conversion']}}</td>
-                <td>{{value['format']}}</td>
-                <td id="td-{{value['name']}}">{{value['value'][0]}}</td>
-                <td>
-                  <span class="table-remove">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{value['name']}}">
-                      Editar
-                    </button>
+          <div class="tabla-responsive">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th class="text-center">Id</th>
+                  <th class="text-center">Campo</th>
+                  <th class="text-center">Tipo</th>
+                  <th class="text-center">Conversión</th>
+                  <th class="text-center">SM</th>
+                  <th class="text-center">Valor</th>
+                  <th class="text-center">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for key, value in data.items() %}
+                <tr>
+                  <td data-title="Id" >{{value['number']}}</td>
+                  <td data-title="Campo" >{{value['name']}}</td>
+                  <td data-title="Tipo" >{{value['type']}}</td>
+                  <td data-title="Conversión">{{value['conversion']}}</td>
+                  <td data-title="SM" >{{value['format']}}</td>
+                  <td data-title="Valor" td-{{value['name']}}">{{value['value'][0]}}</td>
+                  <td data-title="Editar">
+                    <span class="table-remove">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{value['name']}}">
+                        Editar
+                      </button>
 
-                    <!-- Modal -->
-                    <div class="modal fade" id="{{value['name']}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                      aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{value['name']}}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            {% if (value['format'] == 'S') %}
-                              <input type="text" id="inp-{{value['name']}}" value="{{value['value'][0]}}">
-                            {% else %}
-                            <table class="table table-striped table-bordered tabla-edicion"
-                              id="table-{{value['name']}}">
-                              <tbody>
-                                {% if (value['value'][0] is string) %}
-                                <tr>
-                                  <td colspan={{colums}}>
-                                    <input type="text" value="{{value['value'][0]}}">
-                                  </td>
-                                  <td>
-                                    <button  type="button" class="btn btn-danger" style="position: relative;" onclick="delFila(this)" >-</button>
-                                    <button type="button" class="btn btn-primary" style="position: relative;" onclick="addFila(this)">+</button>
-                                  </td>
-                                </tr>
-                                {% else %}
-                                  {% for keyL2,valueL2 in value['value'][0].items() %}
-                                    <tr>
-                                    {% if (valueL2 is string) %}
-                                      <td colspan={{colums}}>
-                                        <input type="text" value="{{valueL2}}">
-                                      </td>
-                                    {% else %}
-                                      {% for keyL3,valueL3 in valueL2.items() %}
-                                        <td>
-                                          <input type="text" style="width: 100%; margin: 0px;" value="{{valueL3}}">
-                                        </td>
-                                      {% endfor %}
-                                    {% endif %}
-                                      <td>
-                                        <button type="button" class="btn btn-danger" onclick="delFila(this)" style="position: relative" >-</button>
-                                        <button type="button" class="btn btn-primary" onclick="addFila(this)" style="position: relative">+</button>
-                                      </td>
-                                    </tr>
-                                  {% endfor %}
-                                {% endif %}
-                              </tbody>
-                              <tbody></tbody>
-                            </table>
-                            {% endif %}
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                              Close
-                            </button>
-                            {% if value['format'] == 'S' %}
-                            <button id="ACEPTAR" type="button" class="btn btn-primary" data-tabla={{table}}
-                              data-registro={{idRecord}} data-campo={{value['name']}} data-nuevoval="inp-{{value['name']}}"
-                              onclick="updateValue(this)">
-                              Save changes
-                            </button>
-                            {% else %}
-                              {% if value['conversion'] == 'D4/E' %}
-                                <button id="ACEPTAR" type="button" class="btn btn-primary" data-tabla={{table}}
-                                data-registro={{idRecord}} data-campo={{value['name']}} data-nuevoval="inp-{{value['name']}}"
-                                onclick="updateDataValues(this)">
-                                Save changes
-                                </button>
+                      <!-- Modal -->
+                      <div class="modal fade" id="{{value['name']}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">{{value['name']}}</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              {% if (value['format'] == 'S') %}
+                                <input type="text" id="inp-{{value['name']}}" value="{{value['value'][0]}}">
                               {% else %}
-                                <button id="ACEPTAR" type="button" class="btn btn-primary" data-tabla={{table}}
-                                  data-registro={{idRecord}} data-campo={{value['name']}} data-nuevoval="inp-{{value['name']}}"
-                                  onclick="updateMValue(this)">
-                                  Save changes
-                                </button>
+                              <table class="table table-striped table-bordered tabla-edicion" id="table-{{value['name']}}">
+                                <tbody>
+                                  {% if (value['value'][0] is string) %}
+                                  <tr>
+                                    <td colspan={{colums}}>
+                                      <input type="text" value="{{value['value'][0]}}">
+                                    </td>
+                                    <td>
+                                      <button  type="button" class="btn btn-danger" style="position: relative;" onclick="delFila(this)" >-</button>
+                                      <button type="button" class="btn btn-primary" style="position: relative;" onclick="addFila(this)">+</button>
+                                    </td>
+                                  </tr>
+                                  {% else %}
+                                    {% for keyL2,valueL2 in value['value'][0].items() %}
+                                      <tr>
+                                      {% if (valueL2 is string) %}
+                                        <td colspan={{colums}}>
+                                          <input type="text" value="{{valueL2}}">
+                                        </td>
+                                      {% else %}
+                                        {% for keyL3,valueL3 in valueL2.items() %}
+                                          <td>
+                                            <input type="text" style="width: 100%; margin: 0px;" value="{{valueL3}}">
+                                          </td>
+                                        {% endfor %}
+                                      {% endif %}
+                                        <td>
+                                          <button type="button" class="btn btn-danger" onclick="delFila(this)" style="position: relative" >-</button>
+                                          <button type="button" class="btn btn-primary" onclick="addFila(this)" style="position: relative">+</button>
+                                        </td>
+                                      </tr>
+                                    {% endfor %}
+                                  {% endif %}
+                                </tbody>
+                                <tbody></tbody>
+                              </table>
                               {% endif %}
-                            {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Close
+                              </button>
+                              {% if value['format'] == 'S' %}
+                              <button id="ACEPTAR" type="button" class="btn btn-primary" data-tabla={{table}}
+                                data-registro={{idRecord}} data-campo={{value['name']}} data-nuevoval="inp-{{value['name']}}"
+                                onclick="updateValue(this)">
+                                Save changes
+                              </button>
+                              {% else %}
+                                {% if value['conversion'] == 'D4/E' %}
+                                  <button id="ACEPTAR" type="button" class="btn btn-primary" data-tabla={{table}}
+                                  data-registro={{idRecord}} data-campo={{value['name']}} data-nuevoval="inp-{{value['name']}}"
+                                  onclick="updateDataValues(this)">
+                                  Save changes
+                                  </button>
+                                {% else %}
+                                  <button id="ACEPTAR" type="button" class="btn btn-primary" data-tabla={{table}}
+                                    data-registro={{idRecord}} data-campo={{value['name']}} data-nuevoval="inp-{{value['name']}}"
+                                    onclick="updateMValue(this)">
+                                    Save changes
+                                  </button>
+                                {% endif %}
+                              {% endif %}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </span>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+                    </span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>   
         </div>
       </div>
     </div>
