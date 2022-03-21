@@ -201,7 +201,12 @@ def editor(table,id):
                         data[i] = {j:str(elemL2)}
                 elif (type(elemL2) == list):
                     countColumns = 2
-                    data[i][j] = ''
+                    try:
+                        data[i][j] = ''
+                    except:
+                        data[i] = {}
+                        data[i] = {j: ''}
+
                     for k,elemL3 in enumerate (elemL2):
                         if (type(elemL3) == str):
                             countColumns = 3
@@ -210,7 +215,7 @@ def editor(table,id):
                             except Exception as E:
                                 data[i][j] = {k:str(elemL3)}
                         elif (type(elemL3) == list):
-                            #countColumns = 3
+                            countColumns = 3
                             data[i][j] = {k: ''}
                             for l,elemL4 in enumerate (elemL3):
                                 if (type(elemL4) == str):
