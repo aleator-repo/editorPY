@@ -148,7 +148,7 @@
       async function preview() {
         var dataStr = document.getElementById("textoMail").value
         var data = JSON.stringify({ "datos": dataStr });
-        let response = await fetch('http://192.168.2.5:5001/preview', {
+        let response = await fetch('http://{{ipPort}}/preview', {
           method: 'POST',
           body: data,
           headers: {
@@ -199,7 +199,7 @@
       //var filters = document.getElementById("filterOp").value
       //console.log(filters)
 
-      let response = await fetch('http://192.168.2.5:5001/search', {
+      let response = await fetch('http://{{ipPort}}/search', {
         method: 'POST',
         body: data,
         headers: {
@@ -245,7 +245,7 @@
       return false
     }
 
-    recurso = 'http://192.168.2.5:5001/listDict/'+nameTable
+    recurso = 'http://{{ipPort}}/listDict/'+nameTable
     let response = await fetch(recurso, {
       method: 'GET'
     })

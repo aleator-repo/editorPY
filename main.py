@@ -16,6 +16,7 @@ from database import getConnectionDB
 app = Flask(__name__)
 
 ses = ""
+ipPort = "localhost:5001"
 
 def getSelectList( thelistcommand, session, sorted = 1):
     
@@ -107,11 +108,11 @@ def listar(table):
     thelistcommand = "SELECT "+table
     resul = getSelectList( thelistcommand , ses)
 
-    return render_template("listar.html", resul = resul, table = table); 
+    return render_template("listar.html", resul = resul, table = table, ipPort=ipPort); 
 
 @app.route('/',methods=['GET'])
 def index():
-    return render_template("index.html"); 
+    return render_template("index.html", ipPort=ipPort); 
 
 @app.route('/search',methods=['POST'])
 def search():
@@ -272,7 +273,7 @@ def editor(table,id):
             except Exception as e:
                 toRet[key]['value']=['']
 
-    return render_template("tableEdit.html", table =table, idRecord =id, data = toRet, colums = countColumns)
+    return render_template("tableEdit.html", table =table, idRecord =id, data = toRet, colums = countColumns, ipPort=ipPort)
     
 
 def getText(arr):
@@ -430,10 +431,6 @@ def updateDataValue():
                         except Exception as E:
                             toRet[i] = {j:str(elemL2)}
 
-
-
-    
-
     return ({"newValue":[str(toRet)]})
 
 if __name__ == "__main__":
@@ -444,5 +441,6 @@ if __name__ == "__main__":
         env_vars = json.loads(f.read())
         hostIP     = env_vars["hostIP"]
         puertoDev = env_vars["puertoDev"]
+        ipPort = hostIP+":"+puertoDev
 
     app.run(host=hostIP,port=puertoDev,debug=True)    
