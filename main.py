@@ -1,4 +1,5 @@
 #Imports de la aplicacion actual
+from logging import exception
 from flask import Flask, request, Blueprint,jsonify, render_template,session
 import json
 import uopy
@@ -16,7 +17,7 @@ app = Flask(__name__)
 
 ses = ""
 
-def getSelectList( thelistcommand, session):
+def getSelectList( thelistcommand, session, sorted = 1):
     
     cmd = Command(session=session)
     cmd.command_text = "CLEARSELECT"
@@ -31,7 +32,10 @@ def getSelectList( thelistcommand, session):
         
         for each in theidList:
             if len(each) > 0:
-                theRtnList.extend( [each] )
+                theRtnList.extend( [int(each)] )
+
+        if (sorted):
+            theRtnList.sort()
 
         return theRtnList
     except UOError as e:
@@ -112,12 +116,34 @@ def index():
 @app.route('/search',methods=['POST'])
 def search():
     table  = request.json['datos']
-    thelistcommand = "SELECT "+table.upper()
+    cantRegsSelect = request.json['cantRegsSelect']
+    try: 
+        filtros = request.json['filters']
+    except:
+        filtros = ''
+        pass
+    
+    thelistcommand = "SELECT "+table.upper()+" "
+
+    for i,filtro in enumerate(filtros):
+        thelistcommand += "WITH "+filtros[filtro]['1']+" "+filtros[filtro]['2']+' "'+filtros[filtro]['3']+'"'
+        if (i != len(filtros) -1):
+            thelistcommand += " AND "
+
+    
+    if (cantRegsSelect):
+        thelistcommand += " SAMPLE "+cantRegsSelect
     resul = getSelectList( thelistcommand , ses)
 
-    toRet = {
-        "resul":resul
-    }
+    if len(resul) != 0:
+        toRet = {
+            "resul":resul
+        }
+    else:
+        toRet = {
+            "resul":"No se encontraron resultados"
+        }
+    
     return jsonify(toRet)
 
 @app.route('/listDict/<table>',methods=['GET'])

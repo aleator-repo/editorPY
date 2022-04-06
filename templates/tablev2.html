@@ -135,7 +135,7 @@
     async function preview() {
       var dataStr = document.getElementById("textoMail").value
       var data = JSON.stringify({ "datos": dataStr });
-      let response = await fetch('http://192.168.2.5:5000/preview', {
+      let response = await fetch('http://192.168.2.5:5001/preview', {
         method: 'POST',
         body: data,
         headers: {
@@ -155,7 +155,7 @@
           "idRecord": {{ idRecord }}
         }
       );
-    let response = await fetch('http://192.168.2.5:5000/save', {
+    let response = await fetch('http://192.168.2.5:5001/save', {
       method: 'POST',
       body: data,
       headers: {
@@ -174,7 +174,7 @@
       console.log(nameTable)
 
       var data = JSON.stringify({ "datos": nameTable });
-      let response = await fetch('http://192.168.2.5:5000/search', {
+      let response = await fetch('http://192.168.2.5:5001/search', {
         method: 'POST',
         body: data,
         headers: {

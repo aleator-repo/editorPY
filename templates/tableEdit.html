@@ -250,7 +250,7 @@
           "nuevoVal": nuevoVal
         }
       );
-      let response = await fetch('http://192.168.2.5:5000/updateValue', {
+      let response = await fetch('http://192.168.2.5:5001/updateValue', {
         method: 'POST',
         body: data,
         headers: {
@@ -294,7 +294,7 @@
           "nuevoVal": result
         }
       );
-      let response = await fetch('http://192.168.2.5:5000/updateMValue', {
+      let response = await fetch('http://192.168.2.5:5001/updateMValue', {
         method: 'POST',
         body: data,
         headers: {
@@ -338,7 +338,7 @@
         "nuevoVal": result
       }
     );
-    let response = await fetch('http://192.168.2.5:5000/updateDataValue', {
+    let response = await fetch('http://192.168.2.5:5001/updateDataValue', {
       method: 'POST',
       body: data,
       headers: {
