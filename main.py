@@ -222,33 +222,33 @@ def editor(table,id):
             for j,elemL2 in enumerate (elem):
                 if (type(elemL2) == str):
                     try:
-                        data[i][j] = str(elemL2)
+                        data[i][j+1] = str(elemL2)
                     except Exception as E:
-                        data[i] = {j:str(elemL2)}
+                        data[i] = {j+1:str(elemL2)}
                 elif (type(elemL2) == list):
                     countColumns = 2
                     try:
-                        data[i][j] = ''
+                        data[i][j+1] = ''
                     except:
                         data[i] = {}
-                        data[i] = {j: ''}
+                        data[i] = {j+1: ''}
 
                     for k,elemL3 in enumerate (elemL2):
                         if (type(elemL3) == str):
                             countColumns = 3
                             try:
-                                data[i][j][k] = str(elemL3)
+                                data[i][j+1][k+1] = str(elemL3)
                             except Exception as E:
-                                data[i][j] = {k:str(elemL3)}
+                                data[i][j+1] = {k+1:str(elemL3)}
                         elif (type(elemL3) == list):
                             countColumns = 3
-                            data[i][j] = {k: ''}
+                            data[i][j+1] = {k+1: ''}
                             for l,elemL4 in enumerate (elemL3):
                                 if (type(elemL4) == str):
                                     try:
-                                        data[i][j][k][l] = str(elemL4)
+                                        data[i][j+1][k+1][l+1] = str(elemL4)
                                     except Exception as E:
-                                        data[i][j][l] = {k:str(elemL4)}
+                                        data[i][j+1][l+1] = {k+1:str(elemL4)}
 
     dic = getDict(table,ses)
     toRet = {}
@@ -360,13 +360,13 @@ def updateMValue():
                 print("Error")
         for i,elem in enumerate(nuevoVal):
             if (len(elem) == 1):
-                toRet[i]=elem[0]
+                toRet[i+1]=elem[0]
             else: 
                 for j,elemL2 in enumerate(elem):
                     try:
-                        toRet[i][j] = str(elemL2)
+                        toRet[i+1][j+1] = str(elemL2)
                     except Exception as E:
-                        toRet[i] = {j:str(elemL2)}
+                        toRet[i+1] = {j+1:str(elemL2)}
 
 
 
