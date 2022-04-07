@@ -103,13 +103,6 @@ def getDict( table , session):
         toRet = {"Error":"Table no exist"}
     return toRet
 
-@app.route('/listar/<table>',methods=['GET'])
-def listar(table):
-    thelistcommand = "SELECT "+table
-    resul = getSelectList( thelistcommand , ses)
-
-    return render_template("listar.html", resul = resul, table = table, ipPort=ipPort); 
-
 @app.route('/',methods=['GET'])
 def index():
     return render_template("index.html", ipPort=ipPort); 
@@ -151,7 +144,6 @@ def search():
 def listDict(table):
     resul = getDict( table , ses)
     return jsonify(resul)
-
 
 @app.route('/table/<table>/<id>',methods=['GET'])
 def table(table,id):
@@ -274,44 +266,6 @@ def editor(table,id):
                 toRet[key]['value']=['']
 
     return render_template("tableEdit.html", table =table, idRecord =id, data = toRet, colums = countColumns, ipPort=ipPort)
-    
-
-def getText(arr):
-    if (type(arr) == str):
-        return arr
-    elif (type(arr[0]) == str):
-        toRet = '\n'.join(arr)
-        return toRet
-    else:
-        return getText(arr[0])
-
-def getTextV2(arr):
-    if (type(arr) == str):
-        return arr
-    elif (type(arr[0]) == str):
-        return arr[0]
-    elif (type(arr[0][0]) == str):
-        return arr[0][0]
-    elif (type(arr[0][0][0]) == str):
-        toRet = '\n'.join(arr[0][0])
-        return toRet
-    else:
-        return str(arr)
-
-@app.route('/preview',methods=['POST'])
-def preview():
-    datos = request.json['datos']
-    idRecord = request.json['idRecord']
-    nameFile = "static/TEXTOS_MAILS_"+str(idRecord)+".html"
-
-    f2 = open(nameFile, "w")
-    f2.write(datos)
-    f2.close()
-
-    nombre = {
-        "nombre":nameFile
-    }
-    return jsonify(nombre)
 
 @app.route('/updateValue',methods=['POST'])
 def updateValue():
