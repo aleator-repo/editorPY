@@ -132,22 +132,6 @@
     <script src="https://getbootstrap.com/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
     <script>
-      async function preview() {
-        var dataStr = document.getElementById("textoMail").value
-        var data = JSON.stringify({ "datos": dataStr });
-        let response = await fetch('http://{{ipPort}}/preview', {
-          method: 'POST',
-          body: data,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        let user = await response.json();
-        document.getElementById('iframePreview').src = "../"+user.nombre
-      }
-    </script>
-
-    <script>
       async function searchTable() {
         event.preventDefault()
         var nameTable = document.getElementById("searchInput").value
