@@ -33,7 +33,7 @@ def getSelectList( thelistcommand, session, sorted = 1):
         
         for each in theidList:
             if len(each) > 0:
-                theRtnList.extend( [int(each)] )
+                theRtnList.extend( [each] )
 
         if (sorted):
             theRtnList.sort()
@@ -273,7 +273,7 @@ def updateValue():
     datos = request.json
 
     table = request.json['table'].upper()
-    registro = int(request.json['registro'])
+    registro = request.json['registro']
     campo = request.json['campo'].upper()
     nuevoVal =request.json['nuevoVal']
 
@@ -289,7 +289,7 @@ def updateMValue():
     datos = request.json
 
     table = request.json['table'].upper()
-    registro = int(request.json['registro'])
+    registro = request.json['registro']
     campo = request.json['campo'].upper()
     nuevoVal =request.json['nuevoVal']
 
